@@ -17,3 +17,9 @@ The tests for hostcall are arranged in the following directories:
 
     Note that the HIP runtime still launches its own hostcall consumer
     thread, but it remains unused.
+
+  * **messages:** Exercise `__ockl_printf*` functions from the device
+    library. These tests emulate `printf` messages using sequences of explicit
+    calls to the library functions. The result is that the
+    device-to-host communication for the printf service is tested
+    without relying on the compiler pass for lowering printf calls.

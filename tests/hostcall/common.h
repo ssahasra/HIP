@@ -70,6 +70,23 @@ set_flags(int argc, char *argv[])
 
 #define SERVICE_TEST 42
 
+#define PACK_ULONG(a, b, c, d, e, f, g, h)                              \
+    ((ulong)h << 56) | ((ulong)g << 48)                                 \
+    | ((ulong)f << 40) | ((ulong)e << 32)                               \
+    | ((uint)d << 24) | ((uint)c << 16)                                 \
+    | ((uint)b << 8) | a;
+
+#define DECLARE_DATA()                                                         \
+    const char *msg_short = "Carpe diem.\n";                                     \
+    const char *msg_long1 = "Lorem ipsum dolor sit amet, consectetur nullam. " \
+                            "In mollis imperdiet nibh nec ullamcorper.\n";       \
+    const char *msg_long2 = "Curabitur nec metus sit amet augue vehicula "     \
+                            "ultrices ut id leo. Lorem ipsum dolor sit amet, " \
+                            "consectetur adipiscing elit amet.\n";               \
+    ulong qword0 = PACK_ULONG('C', 'a', 'r', 'p', 'e', ' ', 'd', 'i');  \
+    ulong qword1 = PACK_ULONG('e', 'm', '.', '\n', 0, 0, 0, 0);            \
+    const uint qlen = 13;
+
 extern "C" __device__ HIP_vector_base<long, 2>::Native_vec_
 __ockl_hostcall_internal(void *buffer, uint service_id, ulong arg0, ulong arg1,
                          ulong arg2, ulong arg3, ulong arg4, ulong arg5,
@@ -83,6 +100,18 @@ __ockl_hostcall_preview(uint service_id, ulong arg0, ulong arg1, ulong arg2,
 extern "C" __device__ HIP_vector_base<long, 2>::Native_vec_
 __ockl_call_host_function(ulong fptr, ulong arg0, ulong arg1, ulong arg2,
                           ulong arg3, ulong arg4, ulong arg5, ulong arg6);
+
+extern "C" __device__ ulong
+__ockl_printf_begin(ulong version);
+
+extern "C" __device__ ulong
+__ockl_printf_append_string(ulong msg_desc,
+                            const char *data, uint is_last);
+
+extern "C" __device__ ulong
+__ockl_printf_append_args(ulong msg_desc, uint num_args,
+                          ulong value0, ulong value1, ulong value2, ulong value3, ulong value4, ulong value5, ulong value6,
+                          uint is_last);
 
 enum { SIGNAL_INIT = UINT64_MAX, SIGNAL_DONE = UINT64_MAX - 1 };
 
@@ -274,6 +303,21 @@ wait_on_signal(hsa_signal_t doorbell, ulong timeout, ulong old_value)
         if (new_value != old_value)
             return new_value;
     }
+}
+
+static void
+pad_string(std::string& str, uint target)
+{
+    uint excess = str.length() % target;
+    uint padlen = (excess == 0) ? 0 : (target - excess);
+    str.append(padlen, 0);
+}
+
+static uint
+round_up(uint x, uint r)
+{
+    uint mask = r - 1;
+    return (x + mask) & ~mask;
 }
 
 #endif
