@@ -101,6 +101,14 @@ extern "C" __device__ HIP_vector_base<long, 2>::Native_vec_
 __ockl_call_host_function(ulong fptr, ulong arg0, ulong arg1, ulong arg2,
                           ulong arg3, ulong arg4, ulong arg5, ulong arg6);
 
+static __device__ ulong
+test_strlen(const char *str)
+{
+    const char *ptr = str;
+    while (*ptr) ++ptr;
+    return ptr - str;
+}
+
 extern "C" __device__ ulong
 __ockl_printf_begin(ulong version);
 

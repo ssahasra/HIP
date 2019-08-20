@@ -65,7 +65,7 @@ kernel_string(int *retval)
     ulong result = 0;
 
     result = __ockl_printf_begin(0);
-    result = __ockl_printf_append_string_n(result, msg_long1, strlen(msg_long1) + 1, is_last);
+    result = __ockl_printf_append_string_n(result, msg_long1, test_strlen(msg_long1) + 1, is_last);
     *retval = result;
 }
 
@@ -111,7 +111,7 @@ kernel_integers(int *retval)
     const uint is_last = 1;
 
     ulong desc = __ockl_printf_begin(0);
-    desc = __ockl_printf_append_string_n(desc, msg, strlen(msg) + 1, 0);
+    desc = __ockl_printf_append_string_n(desc, msg, test_strlen(msg) + 1, 0);
     *retval = __ockl_printf_append_args(desc, 1, (int)42,
                                         0, 0, 0, 0, 0, 0, is_last);
 }
@@ -141,14 +141,14 @@ kernel_mixed(int *retval)
 
     ulong desc = __ockl_printf_begin(0);
     // Format string.
-    desc = __ockl_printf_append_string_n(desc, msg, strlen(msg) + 1, is_not_last);
+    desc = __ockl_printf_append_string_n(desc, msg, test_strlen(msg) + 1, is_not_last);
     // First string argument.
-    desc = __ockl_printf_append_string_n(desc, str_begin, strlen(str_begin) + 1, is_not_last);
+    desc = __ockl_printf_append_string_n(desc, str_begin, test_strlen(str_begin) + 1, is_not_last);
     // Pointer argument.
     desc = __ockl_printf_append_args(desc, 1, (ulong)ptr,
                                      0, 0, 0, 0, 0, 0, is_not_last);
     // Second string argument.
-    desc = __ockl_printf_append_string_n(desc, str_middle, strlen(str_middle) + 1, is_not_last);
+    desc = __ockl_printf_append_string_n(desc, str_middle, test_strlen(str_middle) + 1, is_not_last);
     // Float argument.
     //
     // Technically, this is UB; so is the union trick. The only "not
@@ -157,7 +157,7 @@ kernel_mixed(int *retval)
     desc = __ockl_printf_append_args(desc, 1, *(uint64_t*)&dbl,
                                      0, 0, 0, 0, 0, 0, is_not_last);
     // Third string argument.
-    *retval = __ockl_printf_append_string_n(desc, str_end, strlen(str_end) + 1, is_last);
+    *retval = __ockl_printf_append_string_n(desc, str_end, test_strlen(str_end) + 1, is_last);
 }
 
 static void
