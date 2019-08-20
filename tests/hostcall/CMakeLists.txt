@@ -68,4 +68,4 @@ configure_file(sort-uniq.sh sort-uniq.sh COPYONLY)
 
 add_subdirectory(basic EXCLUDE_FROM_ALL)
 add_subdirectory(device EXCLUDE_FROM_ALL)
-add_subdirectory(messages EXCLUDE_FROM_ALL)
+add_subdirectory(accumulator EXCLUDE_FROM_ALL)
