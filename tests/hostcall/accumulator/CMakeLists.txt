@@ -1,4 +1,4 @@
-hostcall_add_test(testname accumulator ${CMAKE_CURRENT_LIST_DIR}/one-workitem.cpp)
+hostcall_add_test(testname ${CMAKE_CURRENT_LIST_DIR}/one-workitem.cpp)
 set_tests_properties(${testname} PROPERTIES PASS_REGULAR_EXPRESSION
     "Lorem ipsum dolor sit amet, consectetur nullam\\. In mollis imperdiet nibh nec ullamcorper\\.
 Carpe diem\\.
@@ -7,7 +7,7 @@ Begin\\. Pointer: 0xffffffffffffffd5\\. Middle\\. Floating point: 4\\.200000\\. 
 PASSED\\!
 ")
 
-hostcall_build_test(testname accumulator ${CMAKE_CURRENT_LIST_DIR}/one-wave.cpp)
+hostcall_build_test(testname ${CMAKE_CURRENT_LIST_DIR}/one-wave.cpp)
 add_test(NAME ${testname}
     COMMAND ${CMAKE_BINARY_DIR}/tests/hostcall/sort-uniq.sh ${CMAKE_CURRENT_BINARY_DIR}/${testname})
 set_tests_properties(${testname} PROPERTIES PASS_REGULAR_EXPRESSION
@@ -17,7 +17,7 @@ set_tests_properties(${testname} PROPERTIES PASS_REGULAR_EXPRESSION
       1 PASSED\\!
 ")
 
-hostcall_build_test(testname accumulator ${CMAKE_CURRENT_LIST_DIR}/many-waves.cpp)
+hostcall_build_test(testname ${CMAKE_CURRENT_LIST_DIR}/many-waves.cpp)
 add_test(NAME ${testname}
     COMMAND ${CMAKE_BINARY_DIR}/tests/hostcall/sort-uniq.sh ${CMAKE_CURRENT_BINARY_DIR}/${testname})
 set_tests_properties(${testname} PROPERTIES PASS_REGULAR_EXPRESSION

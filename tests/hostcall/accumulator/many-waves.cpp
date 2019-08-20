@@ -20,18 +20,18 @@ kernel_mixed0(int *retval)
     switch (tid % 3) {
     case 0:
         desc = __ockl_printf_begin(0);
-        desc = __ockl_printf_append_string(desc, "%s", 0);
-        desc = __ockl_printf_append_string(desc, msg_short, is_last);
+        desc = __ockl_printf_append_string_n(desc, "%s", strlen("%s") + 1, 0);
+        desc = __ockl_printf_append_string_n(desc, msg_short, strlen(msg_short) + 1, is_last);
         break;
     case 1:
         desc = __ockl_printf_begin(0);
-        desc = __ockl_printf_append_string(desc, "%s", 0);
-        desc = __ockl_printf_append_string(desc, msg_long1, is_last);
+        desc = __ockl_printf_append_string_n(desc, "%s", strlen("%s") + 1, 0);
+        desc = __ockl_printf_append_string_n(desc, msg_long1, strlen(msg_long1) + 1, is_last);
         break;
     case 2:
         desc = __ockl_printf_begin(0);
-        desc = __ockl_printf_append_string(desc, "%s", 0);
-        desc = __ockl_printf_append_string(desc, msg_long2, is_last);
+        desc = __ockl_printf_append_string_n(desc, "%s", strlen("%s") + 1, 0);
+        desc = __ockl_printf_append_string_n(desc, msg_long2, strlen(msg_long2) + 1, is_last);
         break;
     }
 
@@ -80,10 +80,10 @@ kernel_mixed1(int *retval)
     retval[tid] = 0;
 
     desc = __ockl_printf_begin(0);
-    desc = __ockl_printf_append_string(desc, "%s%s%s", 0);
-    desc = __ockl_printf_append_string(desc, msg[tid % 3], 0);
-    desc = __ockl_printf_append_string(desc, msg[(tid + 1) % 3], 0);
-    retval[tid] = __ockl_printf_append_string(desc, msg[(tid + 2) % 3], is_last);
+    desc = __ockl_printf_append_string_n(desc, "%s%s%s", strlen("%s%s%s") + 1, 0);
+    desc = __ockl_printf_append_string_n(desc, msg[tid % 3], strlen(msg[tid % 3]) + 1, 0);
+    desc = __ockl_printf_append_string_n(desc, msg[(tid + 1) % 3], strlen(msg[(tid + 1) % 3]) + 1, 0);
+    retval[tid] = __ockl_printf_append_string_n(desc, msg[(tid + 2) % 3], strlen(msg[(tid + 2) % 3]) + 1, is_last);
 }
 
 static void
@@ -119,7 +119,7 @@ kernel_mixed2(int *retval)
     const char *msg[] = {msg_short, msg_long1, msg_long2};
 
     desc = __ockl_printf_begin(0);
-    result += __ockl_printf_append_string(desc, msg[tid % 3], is_last);
+    result += __ockl_printf_append_string_n(desc, msg[tid % 3], strlen(msg[tid % 3]) + 1, is_last);
 
     desc = __ockl_printf_begin(0);
     result += __ockl_printf_append_args(desc, 2, qword0, qword1,
@@ -127,11 +127,11 @@ kernel_mixed2(int *retval)
 
     desc = __ockl_printf_begin(0);
     result +=
-        __ockl_printf_append_string(desc, msg[(tid + 1) % 3], is_last);
+        __ockl_printf_append_string_n(desc, msg[(tid + 1) % 3], strlen(msg[(tid + 1) % 3]) + 1, is_last);
 
     desc = __ockl_printf_begin(0);
     result +=
-        __ockl_printf_append_string(desc, msg[(tid + 2) % 3], is_last);
+        __ockl_printf_append_string_n(desc, msg[(tid + 2) % 3], strlen(msg[(tid + 2) % 3]) + 1, is_last);
 
     retval[tid] = result;
 }

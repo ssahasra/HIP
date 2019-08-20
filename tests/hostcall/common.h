@@ -105,8 +105,8 @@ extern "C" __device__ ulong
 __ockl_printf_begin(ulong version);
 
 extern "C" __device__ ulong
-__ockl_printf_append_string(ulong msg_desc,
-                            const char *data, uint is_last);
+__ockl_printf_append_string_n(ulong msg_desc, const char *data,
+                              ulong length, uint is_last);
 
 extern "C" __device__ ulong
 __ockl_printf_append_args(ulong msg_desc, uint num_args,
