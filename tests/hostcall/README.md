@@ -23,3 +23,8 @@ The tests for hostcall are arranged in the following directories:
     calls to the library functions. The result is that the
     device-to-host communication for the printf service is tested
     without relying on the compiler pass for lowering printf calls.
+
+  * **printf:** Exercise the actual HIP printf functionality. The set
+    of tests demonstrate quite a few combinations of the POSIX format
+    specifiers. They also test divergent invocations of printf in
+    multiple waves.

@@ -58,16 +58,11 @@ THE SOFTWARE.
 #endif  // __HCC_OR_HIP_CLANG__
 
 #if __HCC__
-// define HIP_ENABLE_PRINTF to enable printf
-#ifdef HIP_ENABLE_PRINTF
-#define HCC_ENABLE_ACCELERATOR_PRINTF 1
-#endif
 
 //---
 // Remainder of this file only compiles with HCC
 #if defined __HCC__
 #include "grid_launch.h"
-#include "hc_printf.hpp"
 // TODO-HCC-GL - change this to typedef.
 // typedef grid_launch_parm hipLaunchParm ;
 
@@ -311,16 +306,10 @@ extern "C" __device__ void* __hip_free(void* ptr);
 static inline __device__ void* malloc(size_t size) { return __hip_malloc(size); }
 static inline __device__ void* free(void* ptr) { return __hip_free(ptr); }
 
-#if defined(__HCC_ACCELERATOR__) && defined(HC_FEATURE_PRINTF)
-template <typename... All>
-static inline __device__ void printf(const char* format, All... all) {
-    hc::printf(format, all...);
-}
-#elif defined(__HCC_ACCELERATOR__) || __HIP__
-template <typename... All>
-static inline __device__ void printf(const char* format, All... all) {}
+#if defined(__HCC_ACCELERATOR__)
+extern "C" __device__ int __builtin_printf(const char *format, ...);
+#define printf(...) __builtin_printf(__VA_ARGS__)
 #endif
-
 #endif //__HCC_OR_HIP_CLANG__
 
 #ifdef __HCC__
