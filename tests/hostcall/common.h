@@ -2,6 +2,7 @@
 #define COMMON_H
 
 #include <amd_hostcall.h>
+#include <iostream>
 
 bool debug_mode;
 #define WHEN_DEBUG(xxx)                                                        \

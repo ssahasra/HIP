@@ -28,6 +28,7 @@ THE SOFTWARE.
 #include "program_state.inl"
 #include "trace_helper.h"
 
+#include <hc_am_internal.hpp>
 #include <hsa/amd_hsa_kernel_code.h>
 #include <hsa/hsa.h>
 #include <hsa/hsa_ext_amd.h>
