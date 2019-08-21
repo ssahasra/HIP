@@ -1,22 +1,3 @@
-/*
-Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-*/
-
 #include <hip/hip_runtime.h>
 #include <hsa/hsa.h>
 
@@ -71,7 +52,7 @@ process_packets(hostcall_buffer_t *buffer, ulong F)
 
         ASSERT(get_ready_flag(header->control) != 0);
 
-        ASSERT(header->service == TEST_SERVICE);
+        ASSERT(header->service == SERVICE_TEST);
 
         ulong activemask = header->activemask;
         WHEN_DEBUG(std::cout << "activemask: " << std::hex << activemask
@@ -155,7 +136,7 @@ kernel(void *buffer, ulong *retval)
     long2 result = {0, 0};
     if (tid % 71 != 1) {
         result.data =
-            __ockl_hostcall_internal(buffer, TEST_SERVICE, arg0, arg1, arg2,
+            __ockl_hostcall_internal(buffer, SERVICE_TEST, arg0, arg1, arg2,
                                      arg3, arg4, arg5, arg6, arg7);
         retval[tid] = result.x;
     }
@@ -184,16 +165,10 @@ test()
         retval[i] = 0x23232323;
     }
 
+    std::thread consumer_thread(consume_packets, buffer);
     hipLaunchKernelGGL(kernel, dim3(num_blocks), dim3(threads_per_block), 0, 0,
                        buffer, retval);
-    hipEvent_t mark;
-    HIPCHECK(hipEventCreate(&mark));
-    HIPCHECK(hipEventRecord(mark));
-
-    std::thread consumer_thread(consume_packets, buffer);
-
-    ASSERT(!timeout(mark, 500));
-
+    hipStreamSynchronize(0);
     work_done(buffer);
     consumer_thread.join();
 

@@ -39,7 +39,7 @@ set_flags(int argc, char *argv[])
 #define KGRN "\x1B[32m"
 
 #define test_passed()                                                          \
-    printf("%sPASSED!%s\n", KGRN, KNRM);                                       \
+    printf("PASSED!\n");                                                       \
     exit(0);
 
 #define test_failed(...)                                                       \
@@ -68,7 +68,7 @@ set_flags(int argc, char *argv[])
         }                                                                      \
     } while (false);
 
-#define TEST_SERVICE 42
+#define SERVICE_TEST 42
 
 extern "C" __device__ HIP_vector_base<long, 2>::Native_vec_
 __ockl_hostcall_internal(void *buffer, uint service_id, ulong arg0, ulong arg1,
@@ -255,22 +255,6 @@ createBuffer(uint num_packets, hsa_signal_t signal)
     retval->ready_stack = 0;
 
     return retval;
-}
-
-static bool
-timeout(hipEvent_t mark, uint millisecs)
-{
-    using std::chrono::system_clock;
-    system_clock::time_point start = system_clock::now();
-    while (hipEventQuery(mark) != hipSuccess) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(5));
-        system_clock::time_point now = system_clock::now();
-        if (now - start > std::chrono::milliseconds(500)) {
-            WHEN_DEBUG(std::cout << "host timed out" << std::endl);
-            return true;
-        }
-    }
-    return false;
 }
 
 static ulong
